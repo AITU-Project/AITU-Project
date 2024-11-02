@@ -8,10 +8,8 @@ function showStep(step) {
 }
 
 function nextStep() {
-    //if (validateStep1()) {
-        currentStep++;
-        showStep(currentStep);
-    //}
+    currentStep++;
+    showStep(currentStep);
 }
 
 function previousStep() {
@@ -22,48 +20,23 @@ function previousStep() {
 async function submitForm(event) {
     event.preventDefault();
 
-    const formData = {
-        phone_number: document.getElementById('phone_number').value,
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        newpassword: document.getElementById('newpassword').value,
-        surname: document.getElementById('surname').value,
-        gender: document.querySelector('input[name="gender"]:checked').value,
-        password: document.getElementById('password').value,
-    };
+    const email = document.getElementById('email').value;
 
     try {
-        const response = await fetch('http://185.198.152.96:8000/receive-token', {
+        const response = await fetch('http://185.198.152.96:8000/check_login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify({ email })
         });
 
         if (!response.ok) {
-            throw new Error('Ошибка при регистрации');
+            throw new Error('Ошибка при отправке данных');
         }
 
         const result = await response.json();
-        const token = result.token;
-
-        const tokenEndpoint = 'http://185.198.152.96:8000/receive-token';
-
-        const sendTokenResponse = await fetch(tokenEndpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ token })
-        });
-
-        if (!sendTokenResponse.ok) {
-            throw new Error('Ошибка при отправке токена');
-        }
-
-        const sendTokenResult = await sendTokenResponse.json();
-        console.log('Токен успешно отправлен:', sendTokenResult);
+        console.log('Ответ сервера:', result);
 
     } catch (error) {
         console.error('Ошибка:', error);
