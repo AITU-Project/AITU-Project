@@ -20,7 +20,13 @@ function previousStep() {
 async function submitForm(event) {
     event.preventDefault();
 
+    const name = document.getElementById('name').value;
+    const surname = document.getElementById('surname').value;
     const email = document.getElementById('email').value;
+    const password = document.getElementById('newpassword').value;
+    const role = "user"; 
+    const gender = document.querySelector('input[name="gender"]:checked').value;
+    console.log(JSON.stringify({ name, surname, email, password, role, gender }));
 
     try {
         const response = await fetch('http://185.198.152.96:8000/check_login', {
@@ -28,7 +34,7 @@ async function submitForm(event) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email })
+            body: JSON.stringify({ name, surname, email, password, role, gender })
         });
 
         if (!response.ok) {
@@ -38,8 +44,16 @@ async function submitForm(event) {
         const result = await response.json();
         console.log('Ответ сервера:', result);
 
+        if (result.success) {
+            alert('Регистрация прошла успешно!');
+            window.location.href = 'https://www.youtube.com';
+        } else {
+            alert(result.detail || 'Произошла ошибка');
+        }
+
     } catch (error) {
         console.error('Ошибка:', error);
+        alert('Произошла ошибка при отправке данных');
     }
 }
 
@@ -64,10 +78,8 @@ document.getElementById('MultiStepForm').addEventListener('submit', submitForm);
 function validateStep2() {
     let isValid = true;
 
-    // Clear previous error messages
     document.querySelectorAll('.error').forEach(el => el.textContent = "");
 
-    // Validate Name
     const nameInput = document.getElementById("name");
     const nameError = document.getElementById("nameError");
     if (nameInput.value.trim() === "") {
@@ -75,7 +87,6 @@ function validateStep2() {
         isValid = false;
     }
 
-    // Validate Email
     const emailInput = document.getElementById("email");
     const emailError = document.getElementById("emailError");
     if (!emailInput.validity.valid) {
@@ -83,7 +94,6 @@ function validateStep2() {
         isValid = false;
     }
 
-    // Validate New Password
     const newpasswordInput = document.getElementById("newpassword");
     const newpasswordError = document.getElementById("newpasswordError");
     if (newpasswordInput.value.trim() === "") {
@@ -91,7 +101,6 @@ function validateStep2() {
         isValid = false;
     }
 
-    // Validate Surname
     const surnameInput = document.getElementById("surname");
     const surnameError = document.getElementById("surnameError");
     if (surnameInput.value.trim() === "") {
@@ -99,14 +108,12 @@ function validateStep2() {
         isValid = false;
     }
 
-    // Validate Gender
     const genderError = document.getElementById("genderError");
     if (!document.querySelector('input[name="gender"]:checked')) {
         genderError.textContent = "Пожалуйста, выберите пол.";
         isValid = false;
     }
 
-    // Validate Password Match
     const passwordInput = document.getElementById("password");
     const passwordError = document.getElementById("passwordError");
     if (newpasswordInput.value !== passwordInput.value) {
