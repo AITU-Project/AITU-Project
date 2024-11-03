@@ -1,24 +1,7 @@
-let currentStep = 0;
-const steps = document.querySelectorAll(".form-step");
-
-function showStep(step) {
-    steps.forEach((s, index) => {
-        s.classList.toggle("active", index === step);
-    });
-}
-
-function nextStep() {
-    currentStep++;
-    showStep(currentStep);
-}
-
-function previousStep() {
-    currentStep--;
-    showStep(currentStep);
-}
-
-async function submitForm(event) {
+document.getElementById('form').addEventListener('submit', async function(event) {
     event.preventDefault();
+
+    if (!validateStep2()) return; //Тут после обработок всех ошибок Ерни моё пойдёт
 
     const name = document.getElementById('name').value;
     const surname = document.getElementById('surname').value;
@@ -26,26 +9,27 @@ async function submitForm(event) {
     const password = document.getElementById('newpassword').value;
     const role = "user"; 
     const gender = document.querySelector('input[name="gender"]:checked').value;
-    console.log(JSON.stringify({ name, surname, email, password, role, gender }));
 
+    const data = { name, surname, email, password, role, gender }; 
+
+    await submitRegistration(data);
+});
+
+async function submitRegistration(data) {
     try {
-        const response = await fetch('http://185.198.152.96:8000/check_login', {
+        const response = await fetch('http://185.198.152.96:8000/Registration', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ name, surname, email, password, role, gender })
+            body: JSON.stringify(data)
         });
-
-        if (!response.ok) {
-            throw new Error('Ошибка при отправке данных');
-        }
 
         const result = await response.json();
         console.log('Ответ сервера:', result);
 
-        if (result.success) {
-            alert('Регистрация прошла успешно!');
+        if (response.ok) {
+            alert('Регистрация выполнена успешно!');
             window.location.href = 'https://www.youtube.com';
         } else {
             alert(result.detail || 'Произошла ошибка');
@@ -56,24 +40,6 @@ async function submitForm(event) {
         alert('Произошла ошибка при отправке данных');
     }
 }
-
-document.getElementById('MultiStepForm').addEventListener('submit', submitForm);
-
-
-
-// function validateStep1() {
-//     const phoneInput = document.getElementById("phone_number");
-//     const phoneError = document.getElementById("phoneError");
-    
-//     // Clear previous error messages
-//     phoneError.textContent = "";
-
-//     if (!phoneInput.value.match(/(\+7|8)?[0-7]\d{9}/)) {
-//         phoneError.textContent = "Пожалуйста, введите действительный номер телефона.";
-//         return false;
-//     }
-//     return true;
-// }
 
 function validateStep2() {
     let isValid = true;
@@ -121,7 +87,5 @@ function validateStep2() {
         isValid = false;
     }
 
-    if (isValid) {
-        alert("Форма успешно отправлена!");
-    }
+    return isValid;
 }
