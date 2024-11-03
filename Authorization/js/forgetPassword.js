@@ -76,6 +76,7 @@ async function submitNewPassword(data) {
     
         if (response.ok) {
             alert('Пароль успешно обновлён!');
+            localStorage.setItem('token', result.token); 
             window.location.href = "https://www.youtube.com";
         } else {
             alert(result.detail || 'Произошла ошибка');

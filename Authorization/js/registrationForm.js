@@ -30,6 +30,7 @@ async function submitRegistration(data) {
 
         if (response.ok) {
             alert('Регистрация выполнена успешно!');
+            localStorage.setItem('token', result.token); 
             window.location.href = 'https://www.youtube.com';
         } else {
             alert(result.detail || 'Произошла ошибка');

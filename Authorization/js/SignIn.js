@@ -24,6 +24,7 @@ async function submitLogin(data) {
 
         if (response.ok) {
             alert('Вход выполнен успешно!');
+             localStorage.setItem('token', result.token); 
             window.location.href = 'https://www.youtube.com'; 
         } else {
             alert(result.detail || 'Произошла ошибка');
