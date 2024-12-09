@@ -7,7 +7,7 @@ import { UpdateApprovalDto } from '../dto/update-approval.dto';
 import { Approval } from '../entities/approval.entity';
 import { ApprovalService } from '../service/approval.service';
 
-@Controller('approval')
+@Controller('approvals')
 @OperationsDtos({ create: CreateApprovalDto, update: UpdateApprovalDto })
 export class ApprovalController extends OperationsController<
   Approval,
