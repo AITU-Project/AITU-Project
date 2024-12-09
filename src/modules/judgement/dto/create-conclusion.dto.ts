@@ -1,7 +1,7 @@
-import { IsString, IsBoolean } from 'class-validator';
+import { IsString, IsBoolean, IsDateString } from 'class-validator';
 
 export class CreateConclusionDto {
-  @IsString()
+  @IsDateString()
   registrationDate: string;
 
   @IsString()
@@ -13,7 +13,7 @@ export class CreateConclusionDto {
   @IsString()
   plannedActions: string;
 
-  @IsString()
+  @IsDateString()
   eventDate: string;
 
   @IsString()

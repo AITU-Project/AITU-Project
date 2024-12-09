@@ -1,4 +1,4 @@
-import { IsString, IsDateString, IsUUID } from 'class-validator';
+import { IsDateString, IsString, IsUUID } from 'class-validator';
 
 export class CreateCalledDto {
   @IsUUID()
