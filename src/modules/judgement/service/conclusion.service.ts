@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Column } from 'nestjs-paginate/lib/helper';
+import { FindOptionsRelations } from 'typeorm';
 
 import { OperationsDtos } from '../../../common/operations/decorators/operations.dtos.decorator';
 import { OperationsEntity } from '../../../common/operations/decorators/operations.entity.decorator';
@@ -21,4 +22,11 @@ export class ConclusionService extends OperationsService<
     'status',
     'region',
   ] as Column<Conclusion>[];
+
+  relations = [
+    'approvals',
+    'called',
+    'incident',
+    'defender',
+  ] as FindOptionsRelations<Conclusion>;
 }
