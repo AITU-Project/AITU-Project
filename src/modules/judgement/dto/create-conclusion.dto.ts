@@ -1,6 +1,9 @@
-import { IsString, IsBoolean, IsDateString } from 'class-validator';
+import { IsString, IsBoolean, IsDateString, IsUUID } from 'class-validator';
 
 export class CreateConclusionDto {
+  @IsUUID()
+  createdBy: string;
+
   @IsDateString()
   registrationDate: string;
 

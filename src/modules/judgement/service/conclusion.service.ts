@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { PaginateQuery, Paginated } from 'nestjs-paginate';
 import { Column } from 'nestjs-paginate/lib/helper';
 import { FindOptionsRelations } from 'typeorm';
 
 import { OperationsDtos } from '../../../common/operations/decorators/operations.dtos.decorator';
 import { OperationsEntity } from '../../../common/operations/decorators/operations.entity.decorator';
 import { OperationsService } from '../../../common/operations/service/operations.service';
+import { UserInterface } from '../../auth/service/auth.service';
+import { EmployeeService } from '../../users/service/employee.service';
 import { CreateConclusionDto } from '../dto/create-conclusion.dto';
 import { UpdateConclusionDto } from '../dto/update-conclusion.dto';
 import { Conclusion } from '../entities/conclusion.entity';
@@ -16,6 +19,9 @@ export class ConclusionService extends OperationsService<
   Conclusion,
   CreateConclusionDto
 > {
+  @Inject(EmployeeService)
+  private readonly employeeService: EmployeeService;
+
   sortableColumns = [
     'actionResult',
     'position',
@@ -29,4 +35,16 @@ export class ConclusionService extends OperationsService<
     'incident',
     'defender',
   ] as FindOptionsRelations<Conclusion>;
+
+  async findAllFiltered(
+    query: PaginateQuery,
+    user: UserInterface,
+  ): Promise<Paginated<Conclusion>> {
+    const employee = await this.employeeService.getEmployeeFromUserId(user.sub);
+    return this.pagination.paginate(query, this.repository, {
+      sortableColumns: this.sortableColumns,
+      where: { createdBy: { id: employee.id } },
+      relations: ['called', 'incident', 'approvals', 'defender'],
+    });
+  }
 }

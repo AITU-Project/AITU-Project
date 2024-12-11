@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
+
+import { Employee } from '../../users/entities/employee.entity';
 
 import { Approval } from './approval.entity';
 import { Called } from './called.entity';
@@ -9,6 +17,9 @@ import { Incident } from './incident.entity';
 export class Conclusion {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @ManyToOne(() => Employee, (employee) => employee.conclusions)
+  createdBy: Employee;
 
   @Column({ type: 'date' })
   registrationDate: string;
