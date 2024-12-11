@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '../../../common/mailer';
 import { Template } from '../../../common/mailer/mailer.types';
 import { RedisService } from '../../../common/redis';
+import { EmployeeService } from '../../users/service/employee.service';
 import { UsersService } from '../../users/service/users.service';
 import { SignUpDto } from '../dto/sign-up.dto';
 import { VerifyDto } from '../dto/verify.dto';
@@ -29,6 +30,7 @@ export class AuthService {
     private readonly jwt: JwtService,
     private readonly redis: RedisService,
     private readonly mailer: MailerService,
+    private readonly employees: EmployeeService,
   ) {}
 
   async signIn(
@@ -103,6 +105,10 @@ export class AuthService {
 
   async profile(user: UserInterface) {
     const sub = user.sub;
-    return { profile: await this.users.findOne(sub), jwt: user };
+    return {
+      profile: await this.users.findOne(sub),
+      jwt: user,
+      employee: await this.employees.getEmployeeFromUserId(sub),
+    };
   }
 }
