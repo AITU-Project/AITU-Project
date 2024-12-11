@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { GuardianService } from '../../common/guardian';
 import { PaginationService } from '../../common/pagination';
 import { ValidationService } from '../../common/validation';
+import { UsersModule } from '../users/users.module';
 
 import { ApprovalController } from './controller/approval.controller';
 import { CalledController } from './controller/called.controller';
@@ -26,7 +28,7 @@ const providers = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forFeature(JudgementEntities)],
+  imports: [TypeOrmModule.forFeature(JudgementEntities), UsersModule],
   controllers: [
     ApprovalController,
     CalledController,
@@ -39,6 +41,7 @@ const providers = [
     PaginationService,
     ValidationService,
     GuardianService,
+    JwtService,
   ],
   exports: providers,
 })

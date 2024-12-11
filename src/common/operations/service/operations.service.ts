@@ -28,7 +28,7 @@ export abstract class OperationsService<T, D extends object>
   constructor(
     private readonly reflector: Reflector,
     private readonly dataSource: DataSource,
-    private readonly pagination: PaginationService,
+    protected readonly pagination: PaginationService,
   ) {}
 
   onModuleInit() {
